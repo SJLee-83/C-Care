@@ -1,0 +1,10 @@
+tensorflow
+opencv-python
+deepface
+matplotlib
+scikit-learn
+
+# requirements.txt 파일에 아래 내용 추가
+fastapi
+uvicorn
+python-multipart

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C-Care | 실시간 모니터 거리 모니터링</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        #video-container {
+            position: relative;
+            width: 640px;
+            height: 480px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #000;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            transform: scaleX(-1); /* 거울 모드 */
+        }
+        #alert-box {
+            margin-top: 20px;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            width: 640px;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease;
+        }
+        .status-safe { background-color: #4CAF50; } /* 안전 (over4) */
+        .status-warning { background-color: #FFC107; } /* 주의 (4) */
+        .status-danger { background-color: #F44336; } /* 위험 (under4) */
+    </style>
+</head>
+<body>
+    <h1>C-Care 모니터링</h1>
+    <div id="video-container">
+        <video id="video" autoplay playsinline></video>
+    </div>
+    <div id="alert-box" class="status-safe">카메라를 로딩 중입니다...</div>
+
+    <canvas id="canvas" style="display:none;"></canvas>
+
+    <script>
+        // HTML 요소 가져오기
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const alertBox = document.getElementById('alert-box');
+        const context = canvas.getContext('2d');
+
+        const API_URL = "http://127.0.0.1:8000/predict";
+
+        // 웹캠 스트림 시작
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+                alertBox.textContent = "모니터링 시작!";
+            })
+            .catch(err => {
+                console.error("웹캠 접근 오류:", err);
+                alertBox.textContent = "웹캠을 연결할 수 없습니다. 권한을 확인해주세요.";
+                alertBox.className = 'alert-box status-danger';
+            });
+
+        // 1초마다 프레임을 캡처하여 서버로 전송
+        setInterval(() => {
+            // 비디오 크기에 맞게 캔버스 크기 설정
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            // 현재 비디오 프레임을 캔버스에 그리기 (거울 모드로)
+            context.translate(canvas.width, 0);
+            context.scale(-1, 1);
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            context.setTransform(1, 0, 0, 1, 0, 0); // 변환 리셋
+
+            // 캔버스 이미지를 Blob 객체로 변환
+            canvas.toBlob(blob => {
+                const formData = new FormData();
+                formData.append('file', blob, 'webcam.jpg');
+
+                // fetch API를 사용하여 FastAPI 서버로 이미지 전송
+                fetch(API_URL, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`서버 오류: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    handlePrediction(data);
+                })
+                .catch(error => {
+                    console.error('API 호출 오류:', error);
+                    alertBox.textContent = "서버와 연결할 수 없습니다.";
+                    alertBox.className = 'alert-box status-danger';
+                });
+            }, 'image/jpeg');
+        }, 1000); // 1000ms = 1초
+
+        // 예측 결과 처리 함수
+        function handlePrediction(data) {
+            const { prediction, probability } = data;
+            const probPercent = (probability * 100).toFixed(1);
+            let message = "";
+            let statusClass = "";
+
+            if (prediction === 'under4') {
+                message = `위험: 너무 가깝습니다! (${probPercent}%)`;
+                statusClass = 'status-danger';
+            } else if (prediction === '4') {
+                message = `주의: 거리를 유지해주세요. (${probPercent}%)`;
+                statusClass = 'status-warning';
+            } else { // over4
+                message = `안전: 좋은 거리입니다. (${probPercent}%)`;
+                statusClass = 'status-safe';
+            }
+
+            alertBox.textContent = message;
+            alertBox.className = `alert-box ${statusClass}`;
+        }
+    </script>
+</body>
+</html>
