@@ -14,6 +14,11 @@
 
 <br>
 
+<p align="center">
+  <img src="assets/C-Care-demo.gif" width="700" alt="C-Care 작동 화면 GIF"/>
+</p>
+<br>
+
 ## 📌 개요 및 개발 동기
 
 컴퓨터 사용 시간이 길어지면서 발생하는 VDT 증후군(거북목, 눈 피로 등)은 많은 현대인의 건강 문제입니다. 이 프로젝트는 **AI 기술을 활용해 사용자가 무의식적으로 모니터에 가까워지는 습관을 인지하고 교정**할 수 있도록 돕기 위해 시작되었습니다. 웹캠을 통해 실시간으로 사용자와 모니터 간의 거리를 3단계(안전, 주의, 위험)로 분류하고 즉각적인 피드백을 제공함으로써, 사용자의 건강한 디지털 생활 습관 형성에 기여하고자 합니다.
@@ -34,22 +39,23 @@
 ```mermaid
 graph TD
     subgraph "사용자 환경 (Client-Side)"
-        A[💻 사용자 웹캠] --> B{🌐 프론트엔드<br>(HTML/JS)};
+        A["💻 사용자 웹캠"] --> B["🌐 프론트엔드<br>(HTML/JS)"];
     end
 
     subgraph "서버 환경 (Server-Side)"
-        C{⚙️ 백엔드 API 서버<br>(FastAPI)};
-        D[🧠 AI 예측 모델<br>(EfficientNetB0)];
+        C["⚙️ 백엔드 API 서버<br>(FastAPI)"]
+        D["🧠 AI 예측 모델<br>(EfficientNetB0)"]
     end
 
-    B -- 1. 1초마다 이미지 프레임 전송 (JPEG) --> C;
-    C -- 2. 이미지 예측 요청 --> D;
-    D -- 3. 예측 결과 반환 (JSON) --> C;
-    C -- 4. JSON 응답 전송 --> B;
-    B --> E[📢 화면에 경고 메시지 표시];
+    B -- "1. 1초마다 이미지 프레임 전송 (JPEG)" --> C;
+    C -- "2. 이미지 예측 요청" --> D;
+    D -- "3. 예측 결과 반환 (JSON)" --> C;
+    C -- "4. JSON 응답 전송" --> B;
+    B --> E["📢 화면에 경고 메시지 표시"];
 
     style A fill:#f9f,stroke:#333,stroke-width:2px
     style E fill:#f9f,stroke:#333,stroke-width:2px
+```
 
 <br>
 
@@ -66,6 +72,7 @@ graph TD
 
 ```
 C-Care/
+├── assets/              # README용 이미지 파일 (아키텍처, 데모 GIF 등)
 ├── models/              # 학습된 AI 모델 파일
 ├── notebooks/           # 실험용 Jupyter Notebook
 ├── src/                 # 핵심 소스 코드
