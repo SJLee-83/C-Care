@@ -14,7 +14,7 @@ from src.predict import DistancePredictor
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # FastAPI 앱 생성
-app = FastAPI(title="C-Care: Real-time Monitor Distance Predictor API")
+app = FastAPI(title="Real-time Monitor Distance Predictor API")
 
 # 모델 경로 설정
 MODEL_PATH = "models/EfficientNetB8282.keras"
@@ -32,10 +32,10 @@ async def root():
     return """
     <html>
         <head>
-            <title>C-Care API</title>
+            <title>시력 보호 모델 API</title>
         </head>
         <body>
-            <h1>C-Care: CNN을 활용한 시력 보호 모델 API</h1>
+            <h1>CNN을 활용한 시력 보호 모델 API</h1>
             <p>API 서버가 정상적으로 실행 중입니다. 예측을 원하시면 /docs 로 이동하여 테스트해주세요.</p>
         </body>
     </html>
