@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 app = FastAPI(title="C-Care: Real-time Monitor Distance Predictor API")
 
 # 모델 경로 설정
-MODEL_PATH = "models/c-care_model.keras"
+MODEL_PATH = "models/EfficientNetB8282.keras"
 
 # 모델 로드 (앱이 시작될 때 한 번만 로드하여 메모리에 유지)
 try:
