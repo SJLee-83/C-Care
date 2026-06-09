@@ -35,7 +35,7 @@ async def root():
             <title>C-Care API</title>
         </head>
         <body>
-            <h1>C-Care: VDT 증후군 예방 AI 모니터링 시스템 API</h1>
+            <h1>C-Care: CNN을 활용한 시력 보호 모델 API</h1>
             <p>API 서버가 정상적으로 실행 중입니다. 예측을 원하시면 /docs 로 이동하여 테스트해주세요.</p>
         </body>
     </html>
