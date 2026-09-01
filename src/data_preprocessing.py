@@ -1,5 +1,3 @@
-# src/data_preprocessing.py
-
 import os
 import cv2
 from retinaface import RetinaFace
@@ -71,8 +69,6 @@ def classify_and_move_faces(directory, target_size=(1280, 720)):
     logging.info(f"총 {total_images}개의 이미지를 처리했습니다.")
     logging.info(f"얼굴이 검출되어 이동된 이미지는 {moved_images}개 입니다.")
 
-# 이 스크립트가 직접 실행될 때만 아래 코드가 동작합니다.
 if __name__ == '__main__':
-    # TODO: 자신의 데이터셋 경로로 수정하세요.
-    DATASET_DIRECTORY = "../data/Dataset/" 
+    DATASET_DIRECTORY = "../data/Dataset/"
     classify_and_move_faces(DATASET_DIRECTORY)

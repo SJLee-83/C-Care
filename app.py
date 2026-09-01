@@ -1,5 +1,3 @@
-# app.py
-
 import uvicorn
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import HTMLResponse
@@ -7,7 +5,6 @@ import numpy as np
 import cv2
 import logging
 
-# src 폴더의 DistancePredictor 클래스를 가져옵니다.
 from src.predict import DistancePredictor
 
 # 로깅 설정

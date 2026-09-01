@@ -1,8 +1,5 @@
-# src/predict.py
-
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.preprocessing.image import img_to_array, load_img
 import cv2
 import logging
 
@@ -41,11 +38,16 @@ class DistancePredictor:
         
         return predicted_class_label, probability
 
-# 이 스크립트가 직접 실행될 때 테스트를 위한 코드
+# 단일 이미지 예측 실행: python predict.py <image_path>
 if __name__ == '__main__':
-    MODEL_PATH = "../models/c-care_model.keras"
-    # TODO: 테스트할 이미지 경로로 수정하세요.
-    IMAGE_PATH = "path/to/your/test_image.jpg" 
+    import sys
+
+    if len(sys.argv) != 2:
+        print("usage: python predict.py <image_path>")
+        raise SystemExit(1)
+
+    MODEL_PATH = "../models/EfficientNetB8282.keras"
+    IMAGE_PATH = sys.argv[1]
 
     predictor = DistancePredictor(MODEL_PATH)
     

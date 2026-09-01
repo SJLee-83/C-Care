@@ -1,5 +1,3 @@
-# src/train.py
-
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -54,7 +52,7 @@ def build_model(num_classes):
         GlobalAveragePooling2D(),
         BatchNormalization(),
         Dropout(0.5),
-        Dense(512, activation='relu'), # elu 대신 relu도 좋은 선택입니다.
+        Dense(512, activation='relu'),
         BatchNormalization(),
         Dropout(0.5),
         Dense(1024, activation='relu'),
@@ -94,14 +92,14 @@ def main():
     """메인 학습 파이프라인 함수"""
     # 경로 설정
     DATA_DIR = "../data/Dataset/"
-    MODEL_SAVE_PATH = "../models/c-care_model.keras" # 모델 저장 경로 및 이름 변경
+    MODEL_SAVE_PATH = "../models/c-care_model.keras"
 
     # 데이터 로드
     x_train, y_train, x_test, y_test = load_data(DATA_DIR)
     
     # 모델 빌드 및 컴파일
     model = build_model(num_classes=3)
-    model.compile(optimizer=Nadam(learning_rate=0.001), # 학습률 조정
+    model.compile(optimizer=Nadam(learning_rate=0.001),
                   loss='categorical_crossentropy',
                   metrics=['accuracy'])
     model.summary()
@@ -114,7 +112,7 @@ def main():
     logging.info("모델 학습을 시작합니다...")
     history = model.fit(x_train, y_train, 
                         batch_size=32, 
-                        epochs=50, # Epochs 조정
+                        epochs=50,
                         validation_split=0.2,
                         callbacks=[early_stop, reduce_lr],
                         shuffle=True)
